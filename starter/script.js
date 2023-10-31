@@ -88,49 +88,53 @@ var upperCasedCharacters = [
   'Z'
 ];
 var passwordOptions = {
-  numberChar: 0,
-  specialChar: false,
-  lowerCaseChar: false,
-  upperCaseChar: false,
-  numbers: false,
+  numberChar: 12,
+  specialChar: true,
+  lowerCaseChar: true,
+  upperCaseChar: true,
+  numbers: true,
 
   amounts: {
-    amtSpecialChar: 0,
-    amtLowerCaseChar: 0,
-    amtUpperCaseChar: 0,
-    amtNumbers: 0, 
+    specialChar: 0,
+    lowerCaseChar: 0,
+    upperCaseChar: 0,
+    numbers: 0, 
   },
   
 
   assignAmts: function(){
+    var splitTotal = 0;
+    var randomAmt = 0;
+
+    function setAmountProperty(property){
+      randomAmt = ~~Math.trunc((passwordOptions.numberChar/howManyTrue)+getRandomInt(1,passwordOptions.numberChar/(howManyTrue**1.5) ,false));
+      splitTotal += randomAmt;
+      if(splitTotal == passwordOptions.numberChar){
+        randomAmt += -1;
+        splitTotal += -1;
+      }
+      console.log([randomAmt, splitTotal, passwordOptions.numberChar]);
+      if(true){
+        passwordOptions.amounts[property] = randomAmt;
+        console.log(passwordOptions.amounts[property]);
+      }
+    }
+
     var howManyTrue = [this.specialChar, this.lowerCaseChar, this.upperCaseChar, this.numbers].filter(function(i){
       return i == true;
     }).length;
-    for(var j = 0; j < howManyTrue; j++){
-      if(this.specialChar){
-        this.amounts.amtSpecialChar += getRandomInt(1, this.numberChar -howManyTrue);
-        this.numberChar = this.numberChar - this.amounts.amtSpecialChar;
-        howManyTrue += -1;
-      } 
-      if(this.lowerCaseChar){
-        this.amounts.amtLowerCaseChar += getRandomInt(1, this.numberChar -howManyTrue);
-        this.numberChar = this.numberChar - this.amounts.amtLowerCaseChar;
-        howManyTrue += -1;
-      }
-      if(this.upperCaseChar){
-        this.amounts.amtUpperCaseChar += getRandomInt(1, this.numberChar -howManyTrue);
-        this.numberChar = this.numberChar - this.amounts.amtUpperCaseChar;
-        howManyTrue += -1;
-      }
-      if(this.numbers){
-        this.amounts.amtNumbers += getRandomInt(1, this.numberChar -howManyTrue);
-        this.numberChar = this.numberChar - this.amounts.amtNumbers;
-        howManyTrue += -1;
-      }
-      
-   } 
-  },
-}
+    
+    setAmountProperty("specialChar");
+    setAmountProperty("lowerCaseChar");
+    setAmountProperty("upperCaseChar");
+    if(this.numbers){
+      this.amounts.numbers = this.numberChar - splitTotal;
+    }
+    },
+    
+    
+  }
+
 // Function to prompt user for password options
 function getPasswordOptions() {
    var numberOfChar = prompt("How many characters long do you want your password? (8-128 incl.)")
@@ -161,14 +165,33 @@ function getRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)]
 }
 
-function getRandomInt(min, max){
+function getRandomInt(min, max, isPos){
   min = Math.ceil(min);
   max = Math.floor(max);
+  if(isPos){
   return Math.floor(Math.random() * (max - min) + min); 
+  }
+  else{
+    switch(getRandomInt(1,3,true)){
+      case 1:
+        return Math.floor(Math.random() * (max - min) + min)*-1
+      case 2:
+        return Math.floor(Math.random() * (max - min) + min)
+    }
+  }
 }
+
+
 
 // Function to generate password with user input
 function generatePassword() {
+  var options = passwordOptions;
+  var passwordArr = [];
+  var avaliableSpaceArr = [];
+  for(var i = 0; i < options.numberChar; i++){
+    passwordArr.push("");
+  }
+  avaliableSpaceArr = passwordArr.forEach()
 
 }
 
@@ -183,8 +206,9 @@ function writePassword() {
   passwordText.value = password;
 }
 
-getPasswordOptions();
+test = "specialChar"
+//console.log(passwordOptions.amounts[test]);
 passwordOptions.assignAmts();
-console.log(passwordOptions);
+console.log(passwordOptions.amounts);
 // Add event listener to generate button
 generateBtn.addEventListener('click', writePassword);
