@@ -88,11 +88,11 @@ var upperCasedCharacters = [
   'Z'
 ];
 var passwordOptions = {
-  numberChar: 12,
-  specialChar: true,
-  lowerCaseChar: true,
-  upperCaseChar: true,
-  numbers: true,
+  numberChar: 0,
+  specialChar: false,
+  lowerCaseChar: false,
+  upperCaseChar: false,
+  numbers: false,
 
   amounts: {
     specialChar: 0,
@@ -113,10 +113,8 @@ var passwordOptions = {
         randomAmt += -1;
         splitTotal += -1;
       }
-      console.log([randomAmt, splitTotal, passwordOptions.numberChar]);
       if(true){
         passwordOptions.amounts[property] = randomAmt;
-        console.log(passwordOptions.amounts[property]);
       }
     }
 
@@ -143,7 +141,6 @@ function getPasswordOptions() {
       getPasswordOptions();
       return;
    }
-   console.log(~~numberOfChar)
    passwordOptions.numberChar = ~~numberOfChar;
    if(confirm("Include special characters?")){
       passwordOptions.specialChar = true;
@@ -186,14 +183,36 @@ function getRandomInt(min, max, isPos){
 // Function to generate password with user input
 function generatePassword() {
   var options = passwordOptions;
-  var passwordArr = [];
-  var avaliableSpaceArr = [];
+  var randomIndex =0;
+  var finalPasswordArr = [];
+  var avalibleIndexes = [];
+  var properties = [options.specialChar, options.lowerCaseChar, options.upperCaseChar, options.numbers];
+  var charArrs = [specialCharacters, lowerCasedCharacters, upperCasedCharacters, numericCharacters];
+  var amounts = [options.amounts.specialChar, options.amounts.lowerCaseChar, options.amounts.upperCaseChar, options.amounts.numbers]
   for(var i = 0; i < options.numberChar; i++){
-    passwordArr.push("");
+    finalPasswordArr.push("");
   }
-  avaliableSpaceArr = passwordArr.forEach()
+  finalPasswordArr.forEach(function(item, i){
+      avalibleIndexes.push(i);
+  
+  })
+    for(var i =0; i<properties.length; i++){
+      if(properties[i]){
+      for(var j=0; j<amounts[i]; j++){
+        randomIndex = getRandomInt(0, avalibleIndexes.length, true);
+        finalPasswordArr[avalibleIndexes[randomIndex]] = getRandom(charArrs[i]);
+        avalibleIndexes.splice(randomIndex,1);
+      }
+    }
+    }
+  return finalPasswordArr.join("");
+  }
+  
+ 
+ 
 
-}
+
+
 
 // Get references to the #generate element
 var generateBtn = document.querySelector('#generate');
@@ -201,14 +220,16 @@ var generateBtn = document.querySelector('#generate');
 // Write password to the #password input
 function writePassword() {
   var password = generatePassword();
+  console.log(password);
   var passwordText = document.querySelector('#password');
-
   passwordText.value = password;
 }
 
 test = "specialChar"
 //console.log(passwordOptions.amounts[test]);
+
+getPasswordOptions();
 passwordOptions.assignAmts();
-console.log(passwordOptions.amounts);
+writePassword();
 // Add event listener to generate button
 generateBtn.addEventListener('click', writePassword);
